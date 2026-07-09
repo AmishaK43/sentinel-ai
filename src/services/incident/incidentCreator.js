@@ -16,13 +16,9 @@ export function createIncidentRecord(incident) {
 
     environment: incident.environment,
 
-    createdAt: new Date().toLocaleTimeString(),
+    createdAt: new Date(),
 
-    timeline: [
-      {
-        time: new Date().toLocaleTimeString(),
-        event: "Incident created",
-      },
-    ],
+    // Preserve previous timeline events
+    timeline: incident.timeline || [],
   };
 }

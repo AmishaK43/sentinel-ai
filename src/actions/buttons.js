@@ -1,14 +1,18 @@
-
-import { createIncidentWorkflow } from "../services/incident/workflowEngine.js";import {
+import {
   updateIncident,
   addTimeline,
   getIncident,
 } from "../services/incident/incidentManager.js";
 
-import { generateInvestigationSummary } from "../services/ai/investigationAgent.js";
+import {
+  createIncidentWorkflow,
+  githubWorkflow,
+  notifyWorkflow,
+  timelineWorkflow,
+} from "../services/incident/workflowEngine.js";
 
+import { generateInvestigationSummary } from "../services/ai/investigationAgent.js";
 import { buildInvestigationSummary } from "../services/slack/investigationBlocks.js";
-import { githubWorkflow } from "../services/incident/workflowEngine.js";
 
 export default function registerButtons(app) {
 
@@ -29,13 +33,15 @@ export default function registerButtons(app) {
       currentStep: "ENVIRONMENT",
     });
 
-    addTimeline(channelId, "Investigation started");
+    addTimeline(
+        channelId,
+        "🔍 Investigation Started"
+    );
+
 
     await client.chat.postMessage({
       channel: channelId,
-
       text: "Investigation started",
-
       blocks: [
         {
           type: "section",
@@ -94,14 +100,16 @@ export default function registerButtons(app) {
       environment: "Production",
       currentStep: "DEPLOYMENT",
     });
+    addTimeline(
+    channelId,
+    "🌍 Environment: Production"
+    );
 
-    addTimeline(channelId, "Environment selected: Production");
+    
 
     await client.chat.postMessage({
       channel: channelId,
-
       text: "Was there a deployment recently?",
-
       blocks: [
         {
           type: "section",
@@ -160,14 +168,15 @@ export default function registerButtons(app) {
       deployment: "Yes",
       currentStep: "CUSTOMER_IMPACT",
     });
-
-    addTimeline(channelId, "Recent deployment confirmed");
+    addTimeline(
+    channelId,
+    "🚀 Recent Deployment Confirmed"
+    );
+    
 
     await client.chat.postMessage({
       channel: channelId,
-
       text: "Are customers currently affected?",
-
       blocks: [
         {
           type: "section",
@@ -220,24 +229,26 @@ export default function registerButtons(app) {
       currentStep: "AI_ANALYSIS",
     });
 
-    addTimeline(channelId, "Customer impact confirmed");
+    addTimeline(channelId, "👥 Customer Impact Confirmed");
 
     const incident = getIncident(channelId);
 
     if (!incident) {
-
       await client.chat.postMessage({
         channel: channelId,
         text: "❌ Incident not found.",
       });
-
       return;
     }
 
-    // Generate AI Investigation Summary
     const summary = await generateInvestigationSummary(incident);
+    addTimeline(
+    channelId,
+    "🧠 AI Investigation Completed"
+    );
 
-    // Send Beautiful AI Card
+    
+
     await client.chat.postMessage({
       channel: channelId,
       text: "AI Investigation Summary",
@@ -246,11 +257,11 @@ export default function registerButtons(app) {
 
   });
 
-    /*
-  * ==========================================================
-  * Create Incident
-  * ==========================================================
-  */
+  /*
+   * ==========================================================
+   * Create Incident
+   * ==========================================================
+   */
 
   app.action("create_incident", async ({ ack, body, client }) => {
 
@@ -261,35 +272,94 @@ export default function registerButtons(app) {
     const incident = getIncident(channelId);
 
     if (!incident) {
-
       await client.chat.postMessage({
         channel: channelId,
         text: "❌ Incident not found.",
+      });
+      return;
+    }
+
+    await createIncidentWorkflow(client, channelId, incident);
+
+    
+
+  });
+
+  /*
+   * ==========================================================
+   * GitHub Investigation
+   * ==========================================================
+   */
+
+  app.action("github_check", async ({ ack, body, client }) => {
+
+    await ack();
+
+    const channelId = body.channel.id;
+
+    await githubWorkflow(client, channelId);
+
+    
+
+  });
+
+  /*
+   * ==========================================================
+   * Notify Team
+   * ==========================================================
+   */
+
+  app.action("notify_team", async ({ ack, body, client }) => {
+
+    await ack();
+
+    const channelId = body.channel.id;
+
+    const incident = getIncident(channelId);
+
+    if (!incident) {
+      await client.chat.postMessage({
+        channel: channelId,
+        text: "❌ Incident not found.",
+      });
+      return;
+    }
+
+    await notifyWorkflow(client, channelId, incident);
+
+    
+
+  });
+
+  app.action("timeline", async ({ ack, body, client }) => {
+
+    await ack();
+
+    const channelId = body.channel.id;
+
+    const incident = getIncident(channelId);
+
+    if (!incident) {
+
+      await client.chat.postMessage({
+
+        channel: channelId,
+
+        text: "❌ Incident not found.",
+
       });
 
       return;
 
     }
 
-    await createIncidentWorkflow(
+    await timelineWorkflow(
+
       client,
       channelId,
       incident
-    );
-
-  });
-
-  app.action("github_check", async ({ ack, body, client }) => {
-
-    await ack();
-
-    await githubWorkflow(
-
-      client,
-      body.channel.id
 
     );
 
   });
-
 }

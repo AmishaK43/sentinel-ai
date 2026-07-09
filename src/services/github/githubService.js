@@ -1,10 +1,10 @@
-export async function getLatestCommit() {
+export async function getRecentCommits() {
 
   const owner = "AmishaK43";
   const repo = "sentinel-ai";
 
   const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/commits`
+    `https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`
   );
 
   if (!response.ok) {
@@ -13,18 +13,18 @@ export async function getLatestCommit() {
 
   const commits = await response.json();
 
-  const latest = commits[0];
+  return commits.map(commit => ({
 
-  return {
-    sha: latest.sha.substring(0, 7),
+    sha: commit.sha.substring(0,7),
 
-    message: latest.commit.message,
+    message: commit.commit.message,
 
-    author: latest.commit.author.name,
+    author: commit.commit.author.name,
 
-    date: latest.commit.author.date,
+    date: commit.commit.author.date,
 
-    url: latest.html_url,
-  };
+    url: commit.html_url
+
+  }));
 
 }

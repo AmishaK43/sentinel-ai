@@ -63,6 +63,14 @@ export function buildIncidentWorkspace(record) {
             text: "📂 Check GitHub",
           },
         },
+        {
+            type: "button",
+            text: {
+                type: "plain_text",
+                text: "📋 Timeline",
+            },
+            action_id: "timeline",
+        },
 
         {
           type: "button",
@@ -70,15 +78,6 @@ export function buildIncidentWorkspace(record) {
           text: {
             type: "plain_text",
             text: "📢 Notify Team",
-          },
-        },
-
-        {
-          type: "button",
-          action_id: "timeline",
-          text: {
-            type: "plain_text",
-            text: "📋 Timeline",
           },
         },
 
