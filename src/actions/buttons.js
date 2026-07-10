@@ -282,6 +282,9 @@ export default function registerButtons(app) {
       return;
     }
 
+    // ✅ Auto assign the Slack user as the incident owner
+    incident.owner = `<@${body.user.id}>`;
+
     await createIncidentWorkflow(client, channelId, incident);
 
     

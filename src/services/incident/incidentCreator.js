@@ -10,7 +10,8 @@ export function createIncidentRecord(incident) {
 
     priority: "P0",
 
-    owner: "Unassigned",
+    // Auto assigned owner
+    owner: incident.owner || "Unassigned",
 
     status: "Investigating",
 
@@ -18,7 +19,6 @@ export function createIncidentRecord(incident) {
 
     createdAt: new Date(),
 
-    // Preserve previous timeline events
     timeline: incident.timeline || [],
   };
 }
