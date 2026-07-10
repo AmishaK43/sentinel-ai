@@ -96,18 +96,117 @@ export async function timelineWorkflow(client, channelId, incident) {
 /**
  * Resolve Incident
  */
+
 export async function resolveWorkflow(client, channelId, incident) {
+
+  // Update incident
+  updateIncident(channelId, {
+    status: "Resolved",
+    resolvedAt: new Date(),
+  });
+
+  // Add timeline event
   addTimeline(channelId, "✅ Incident Resolved");
+
+  const updatedIncident = {
+    ...incident,
+    status: "Resolved",
+    resolvedAt: new Date(),
+  };
+
+  // Calculate duration
+  const durationMinutes = Math.round(
+    (updatedIncident.resolvedAt - updatedIncident.createdAt) / 60000
+  );
+
   await client.chat.postMessage({
 
     channel: channelId,
 
-    text:
+    text: "Incident Resolved",
 
-`✅ Incident ${incident.id} has been resolved.
+    blocks: [
 
-Great work team! 🎉`
+      {
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: "✅ Incident Resolved",
+        },
+      },
+
+      {
+        type: "section",
+        fields: [
+
+          {
+            type: "mrkdwn",
+            text: `*Incident ID*\n${updatedIncident.id}`,
+          },
+
+          {
+            type: "mrkdwn",
+            text: `*Status*\n🟢 Resolved`,
+          },
+
+          {
+            type: "mrkdwn",
+            text: `*Service*\n${updatedIncident.service}`,
+          },
+
+          {
+            type: "mrkdwn",
+            text: `*Environment*\n${updatedIncident.environment}`,
+          },
+
+          {
+            type: "mrkdwn",
+            text: `*Duration*\n${durationMinutes} minute(s)`,
+          },
+
+          {
+            type: "mrkdwn",
+            text: `*Priority*\n${updatedIncident.priority}`,
+          },
+
+        ],
+      },
+
+      {
+        type: "divider",
+      },
+
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text:
+`🎉 *The incident has been successfully resolved.*
+
+Sentinel AI recommends generating an AI-powered postmortem report for future reference.`,
+        },
+      },
+
+      {
+        type: "actions",
+        elements: [
+
+          {
+            type: "button",
+            style: "primary",
+            action_id: "generate_postmortem",
+            text: {
+              type: "plain_text",
+              text: "📝 Generate Postmortem",
+            },
+          },
+
+        ],
+      },
+
+    ],
 
   });
 
 }
+

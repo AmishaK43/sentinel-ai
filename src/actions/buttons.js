@@ -9,10 +9,13 @@ import {
   githubWorkflow,
   notifyWorkflow,
   timelineWorkflow,
+  resolveWorkflow,
 } from "../services/incident/workflowEngine.js";
 
 import { generateInvestigationSummary } from "../services/ai/investigationAgent.js";
 import { buildInvestigationSummary } from "../services/slack/investigationBlocks.js";
+import { generatePostmortem } from "../services/ai/postmortemAgent.js";
+import { buildPostmortemBlocks } from "../services/slack/postmortemBlocks.js";
 
 export default function registerButtons(app) {
 
@@ -360,6 +363,87 @@ export default function registerButtons(app) {
       incident
 
     );
+
+  });
+
+  app.action("resolve_incident", async ({ ack, body, client }) => {
+
+    await ack();
+
+    const channelId = body.channel.id;
+
+    const incident = getIncident(channelId);
+
+    if (!incident) {
+
+      await client.chat.postMessage({
+        channel: channelId,
+        text: "❌ Incident not found.",
+      });
+
+      return;
+
+    }
+
+    await resolveWorkflow(
+      client,
+      channelId,
+      incident
+    );
+
+  });
+
+  app.action("generate_postmortem", async ({ ack, body, client }) => {
+
+    await ack();
+
+    const channelId = body.channel.id;
+
+    const incident = getIncident(channelId);
+
+    if (!incident) {
+
+      await client.chat.postMessage({
+        channel: channelId,
+        text: "❌ Incident not found.",
+      });
+
+      return;
+    }
+
+    // Show loading message
+    await client.chat.postMessage({
+      channel: channelId,
+      text: "🤖 Sentinel AI is generating the postmortem...",
+    });
+
+    try {
+
+      const report = await generatePostmortem(incident);
+
+      await client.chat.postMessage({
+
+        channel: channelId,
+
+        text: "AI Incident Postmortem",
+
+        blocks: buildPostmortemBlocks(report),
+
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      await client.chat.postMessage({
+
+        channel: channelId,
+
+        text: "❌ Failed to generate postmortem.",
+
+      });
+
+    }
 
   });
 }
