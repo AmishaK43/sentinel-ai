@@ -11,10 +11,27 @@ export function buildPostmortemBlocks(report) {
     },
 
     {
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text: "🤖 Generated automatically by Sentinel AI",
+        },
+      ],
+    },
+
+    {
+      type: "divider",
+    },
+
+    {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Summary*\n${report.summary}`,
+        text:
+`📊 *Executive Summary*
+
+${report.summary}`,
       },
     },
 
@@ -22,7 +39,10 @@ export function buildPostmortemBlocks(report) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Root Cause*\n${report.rootCause}`,
+        text:
+`🧩 *Root Cause*
+
+${report.rootCause}`,
       },
     },
 
@@ -30,7 +50,10 @@ export function buildPostmortemBlocks(report) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Business Impact*\n${report.impact}`,
+        text:
+`⚠️ *Business Impact*
+
+${report.impact}`,
       },
     },
 
@@ -38,7 +61,10 @@ export function buildPostmortemBlocks(report) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Resolution*\n${report.resolution}`,
+        text:
+`✅ *Resolution*
+
+${report.resolution}`,
       },
     },
 
@@ -51,8 +77,9 @@ export function buildPostmortemBlocks(report) {
       text: {
         type: "mrkdwn",
         text:
-          "*📚 Lessons Learned*\n• " +
-          report.lessonsLearned.join("\n• "),
+`📚 *Lessons Learned*
+
+• ${report.lessonsLearned.join("\n• ")}`,
       },
     },
 
@@ -61,9 +88,25 @@ export function buildPostmortemBlocks(report) {
       text: {
         type: "mrkdwn",
         text:
-          "*✅ Action Items*\n• " +
-          report.actionItems.join("\n• "),
+`📌 *Action Items*
+
+• ${report.actionItems.join("\n• ")}`,
       },
+    },
+
+    {
+      type: "divider",
+    },
+
+    {
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text:
+            "💡 This report was generated using AI and should be reviewed by the engineering team.",
+        },
+      ],
     },
 
   ];

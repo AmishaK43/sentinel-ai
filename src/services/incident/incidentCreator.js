@@ -1,4 +1,29 @@
 export function createIncidentRecord(incident) {
+
+  let priority = "P2";
+
+  switch ((incident.severity || "").toUpperCase()) {
+
+    case "CRITICAL":
+      priority = "P0";
+      break;
+
+    case "HIGH":
+      priority = "P1";
+      break;
+
+    case "MEDIUM":
+      priority = "P2";
+      break;
+
+    case "LOW":
+      priority = "P3";
+      break;
+
+    default:
+      priority = "P2";
+  }
+
   return {
     id: incident.id,
 
@@ -8,9 +33,8 @@ export function createIncidentRecord(incident) {
 
     severity: incident.severity,
 
-    priority: "P0",
+    priority,
 
-    // Auto assigned owner
     owner: incident.owner || "Unassigned",
 
     status: "Investigating",

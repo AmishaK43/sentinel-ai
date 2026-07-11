@@ -11,31 +11,31 @@ export function buildIncidentWorkspace(record) {
     {
       type: "section",
       fields: [
-        {
-          type: "mrkdwn",
-          text: `*Incident ID*\n${record.id}`,
-        },
-        {
-          type: "mrkdwn",
-          text: `*Priority*\n🔴 ${record.priority}`,
-        },
-        {
-          type: "mrkdwn",
-          text: `*Service*\n${record.service}`,
-        },
-        {
-          type: "mrkdwn",
-          text: `*Status*\n🟠 ${record.status}`,
-        },
-        {
-          type: "mrkdwn",
-          text: `*Environment*\n${record.environment}`,
-        },
-        {
-          type: "mrkdwn",
-          text: `*Owner*\n${record.owner}`,
-        },
-      ],
+          {
+            type: "mrkdwn",
+            text: `🆔 *Incident ID*\n${record.id}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `🔴 *Priority*\n${record.priority}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `⚙️ *Service*\n${record.service}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `🟠 *Status*\n${record.status}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `🌍 *Environment*\n${record.environment}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `👤 *Owner*\n${record.owner}`,
+          },
+        ],
     },
 
     {
@@ -47,8 +47,11 @@ export function buildIncidentWorkspace(record) {
       text: {
         type: "mrkdwn",
         text:
-          "🤖 *Sentinel AI has created an incident workspace.*\n" +
-          "Choose the next action to continue the investigation.",
+          `🤖 *Sentinel AI has created the incident workspace.*
+
+          The incident has been classified and is now ready for investigation.
+
+          Choose one of the actions below to continue.`
       },
     },
 

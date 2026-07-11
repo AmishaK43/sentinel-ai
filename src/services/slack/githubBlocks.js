@@ -12,26 +12,41 @@ export function buildGithubSummary(commit) {
 
     {
       type: "section",
+      text: {
+        type: "mrkdwn",
+        text:
+`🤖 *Sentinel AI analyzed the latest repository activity.*
+
+The latest deployment may be related to the current incident.`,
+      },
+    },
+
+    {
+      type: "divider",
+    },
+
+    {
+      type: "section",
       fields: [
 
         {
           type: "mrkdwn",
-          text: `*Repository*\nAmishaK43/sentinel-ai`,
+          text: `📦 *Repository*\nAmishaK43/sentinel-ai`,
         },
 
         {
           type: "mrkdwn",
-          text: `*Commit*\n${commit.sha}`,
+          text: `📝 *Commit*\n\`${commit.sha}\``,
         },
 
         {
           type: "mrkdwn",
-          text: `*Author*\n${commit.author}`,
+          text: `👤 *Author*\n${commit.author}`,
         },
 
         {
           type: "mrkdwn",
-          text: `*Date*\n${new Date(commit.date).toLocaleString()}`,
+          text: `🕒 *Commit Time*\n${new Date(commit.date).toLocaleString()}`,
         },
 
       ],
@@ -41,7 +56,10 @@ export function buildGithubSummary(commit) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Latest Commit Message*\n${commit.message}`,
+        text:
+`📌 *Latest Commit Message*
+
+${commit.message}`,
       },
     },
 
@@ -54,13 +72,15 @@ export function buildGithubSummary(commit) {
       text: {
         type: "mrkdwn",
         text:
-`🤖 *Sentinel AI Assessment*
+`### 🤖 AI Assessment
 
-The latest deployment modified the application.
+• Recent deployment detected
 
-Please review this commit as part of the investigation.
+• Deployment timing overlaps with incident
 
-Confidence: *90%*`,
+• Recommend reviewing this commit before rollback
+
+• Confidence: *90%*`,
       },
     },
 
@@ -70,6 +90,7 @@ Confidence: *90%*`,
 
         {
           type: "button",
+          style: "primary",
           text: {
             type: "plain_text",
             text: "🔗 Open Commit",
