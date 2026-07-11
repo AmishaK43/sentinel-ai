@@ -7,7 +7,9 @@ registerAppMention(app);
 registerButtons(app);
 
 (async () => {
-  await app.start();
+  await app.start(process.env.PORT || 3000);
 
-  console.log("🚀 Sentinel AI is running...");
+  console.log(
+    `🚀 Sentinel AI running on port ${process.env.PORT || 3000}`
+  );
 })();
